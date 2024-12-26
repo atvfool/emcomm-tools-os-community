@@ -2,7 +2,7 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 1 November 2024
-# Updated : 8 November 2024
+# Updated : 26 December 2024
 # Purpose : Wrapper script for starting Dire Wolf with PnP support
 #
 # Preconditions:
@@ -13,6 +13,9 @@
 # 2. Dire Wolf started
 
 DIREWOLF_CONF_FILE=${ET_HOME}/conf/template.d/packet/direwolf.conf
+
+# FLags to enable FX.25 and debugging
+FX25_OPTS="-X 16 -d x"
 
 usage() {
   echo "usage: $(basename $0) <command> <type>"
@@ -71,7 +74,7 @@ start() {
       exit 1
     fi
    
-    CMD="direwolf -c ${DIREWOLF_CONF_FILE} -l ${ET_LOG_DIR} -t 0 -p"
+    CMD="direwolf -c ${DIREWOLF_CONF_FILE} -t 0 -p ${FX25_OPTS}"
     et-log "Starting Dire Wolf with: '${CMD}'"
     echo
     ${CMD}

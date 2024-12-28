@@ -16,6 +16,8 @@ Description=EmComm Tools Dire Wolf simple packet service
 
 [Service]
 ExecStart=/opt/emcomm-tools/bin/et-direwolf start simple
+#StandardOutput=append:/tmp/et/et.log
+
 Restart=no
 
 [Install]

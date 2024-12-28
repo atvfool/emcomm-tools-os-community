@@ -14,8 +14,14 @@
 
 DIREWOLF_CONF_FILE=${ET_HOME}/conf/template.d/packet/direwolf.conf
 
-# FLags to enable FX.25 and debugging
-FX25_OPTS="-X 16 -d x"
+[ -z ${ET_DEBUG} ] && ET_DEBUG=0
+
+# Enable FX.25
+if [ "${ET_DEBUG}" -eq 1 ]; then
+  FX25_OPTS="-X 16 -d x"
+else
+  FX25_OPTS="-X 16"
+fi
 
 usage() {
   echo "usage: $(basename $0) <command> <type>"

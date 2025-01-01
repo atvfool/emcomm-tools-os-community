@@ -1,0 +1,102 @@
+#!/bin/bash
+#
+# Author   : Gaston Gonzalez
+# Date     : 1 January 2025
+# Purpose  : Utility for accessing the Bluetooth TNC on the BTECH
+#            UV Pro.           
+
+# TODO: read from file
+CONF_FILE="${HOME}/.config/emcomm-tools/btech-uv-pro.json"
+MAC="38:D2:00:00:ED:C8"
+
+# TODO: Write to /etc/ax25/axports
+
+BT_DEVICE="/dev/rfcomm0"
+AX25_PORT="pkt1200"
+
+RED='\x1B[1;31m'
+BLUE='\x1B[1;34m'
+CYAN='\x1B[1;36m'
+GREEN='\x1B[1;32m'
+YELLOW='\x1B[1;33m'
+NC='\x1B[0m'
+
+function usage() {
+  echo "Usage: $(basename $0) <command>"
+  echo "  connect - Connect to radio via Bluetooth" 
+  echo "  pair    - Pair radio via Bluetooth" 
+  echo "  unpair  - Unpair radio via Bluetooth" 
+}
+
+if [ $# -ne 1 ]; then
+  usage
+  exit 1
+fi
+
+
+stop_all_services() {
+
+  PS_OUT=$(ps -ef | grep [k]issattach) 
+  if [ $? -eq 0 ]; then
+    echo -e "${BLUE}Killing kissattach process(es)...${NC}"
+    sudo killall kissattach
+  fi
+ 
+  sleep 3
+
+  PS_OUT=$(ps -ef | grep [r]fcomm) 
+  if [ $? -eq 0 ]; then
+    echo -e "${BLUE}Killing rfcomm process(es)...${NC}"
+    sudo killall rfcomm
+  fi
+
+}
+
+case $1 in
+  connect)
+    echo -e "${YELLOW}"
+    read -p "Turn on BTech UV Pro, then press [ENTER] when on."
+
+    is_paired=$(bluetoothctl info ${MAC} | grep "Paired" | awk '{print $2}')
+    if [ "${is_paired}" != "yes" ]; then
+    echo -e "${RED}"
+      et-log "UV Pro is not paired. Run: '$(basename $0) pair'"
+      echo -e "${NC}"
+      exit 1
+    fi  
+ 
+    echo -e "${GREEN}Found UV Pro with MAC address: ${MAC}" 
+    stop_all_services
+
+    echo -e "${BLUE}Connecting to radio..." 
+    sudo rfcomm connect /dev/rfcomm0 ${MAC} 1>/dev/null 2>&1 &
+
+    sleep 10 && reset
+
+    if [ -e /dev/rfcomm0 ]; then
+      echo -e "${GREEN}UV Pro connected via Bluetooth serial${NC}" 
+    else
+      echo -e "${RED}UV Pro failed to connect via Bluetooth serial${NC}"
+      exit 1
+    fi
+
+    echo -e "${BLUE}Connecting KISS interface using ${BT_DEVICE} and AX.25 port: ${AX25_PORT}${NC}"
+    KISS_OUT=$(sudo kissattach ${BT_DEVICE} ${AX25_PORT})
+    
+    if [ $? -eq 0 ]; then
+      echo -e "${GREEN}Packet port ready"
+    else 
+      echo -e "${RED}Failed to setup radio for packet.${NC}"
+      exit 1
+    fi
+
+    KISS_OUT=$(sudo kissparms -c 1 -p ${AX25_PORT})
+
+    echo -e "${YELLOW}\nRun: axcall pkt1200 <STATION>${NC}"
+    ;;
+  *)
+    et-log "Invalid command."
+    usage
+    exit 1
+  ;;
+esac

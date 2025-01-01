@@ -1,0 +1,7 @@
+%bluetooth ALL=(ALL) NOPASSWD: /usr/bin/rfcomm *
+%bluetooth ALL=(ALL) NOPASSWD: /usr/sbin/kissattach /dev/rfcomm0 *
+%bluetooth ALL=(ALL) NOPASSWD: /usr/sbin/kissparms *
+
+%bluetooth ALL=(ALL) NOPASSWD: /usr/bin/killall kissattach
+%bluetooth ALL=(ALL) NOPASSWD: /usr/bin/killall kissattach
+%bluetooth ALL=(ALL) NOPASSWD: /usr/bin/killall rfcomm

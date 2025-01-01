@@ -9,10 +9,9 @@
 CONF_FILE="${HOME}/.config/emcomm-tools/btech-uv-pro.json"
 MAC="38:D2:00:00:ED:C8"
 
-# TODO: Write to /etc/ax25/axports
-
 BT_DEVICE="/dev/rfcomm0"
 AX25_PORT="pkt1200"
+AX25_CONF_FILE="/etc/ax25/axports"
 
 RED='\x1B[1;31m'
 BLUE='\x1B[1;34m'
@@ -33,6 +32,29 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
+update_ax25_conf() {
+
+    [ -z "$ET_USER_CONFIG" ] && ET_USER_CONFIG="${HOME}/.config/emcomm-tools/user.json"
+
+    CALLSIGN=$(cat ${ET_USER_CONFIG} | jq -r .callsign)
+
+    if [ "${CALLSIGN}" = "N0CALL" ]; then
+      echo -e "${RED}No callsign set. Run et-user first.${NC}"
+      exit 1
+    fi
+
+  GREP_OUT=$(grep ${AX25_PORT} ${AX25_CONF_FILE})
+  if [ $? -eq 0 ]; then
+    # Delete all existing pkt1200 entries. Note: we can't use sed here
+    # since we do not have permission to create a temporary file with
+    # inline replacement. ed modifies the file directly.
+    printf "g/^pkt1200/d\nw\nq\n" | ed ${AX25_CONF_FILE} > /dev/null 2>&1
+
+  fi
+
+  echo -e "${BLUE}Adding AX25 port for ${CALLSIGN}${NC}"
+  echo "pkt1200 ${CALLSIGN} 1200 255	2 1200 Packet" >> ${AX25_CONF_FILE}
+}
 
 stop_all_services() {
 
@@ -55,7 +77,9 @@ stop_all_services() {
 case $1 in
   connect)
     echo -e "${YELLOW}"
-    read -p "Turn on BTech UV Pro, then press [ENTER] when on."
+    echo -e "1. Turn on the BTECH UV PRO"
+    echo -e "2. Menu > General Settings > KISS TNC = checked"
+    read -p "3. Press [ENTER] when done."
 
     is_paired=$(bluetoothctl info ${MAC} | grep "Paired" | awk '{print $2}')
     if [ "${is_paired}" != "yes" ]; then
@@ -67,6 +91,8 @@ case $1 in
  
     echo -e "${GREEN}Found UV Pro with MAC address: ${MAC}" 
     stop_all_services
+
+    update_ax25_conf 
 
     echo -e "${BLUE}Connecting to radio..." 
     sudo rfcomm connect /dev/rfcomm0 ${MAC} 1>/dev/null 2>&1 &
@@ -92,7 +118,13 @@ case $1 in
 
     KISS_OUT=$(sudo kissparms -c 1 -p ${AX25_PORT})
 
-    echo -e "${YELLOW}\nRun: axcall pkt1200 <STATION>${NC}"
+    echo -e "${YELLOW}"
+    echo -e "SAMPLE COMMANDS                  DESCRIPTION                     "
+    echo -e "-------------------------------  --------------------------------"
+    echo -e "axcall pkt1200 <STATION>         Connect directly to a node      "
+    echo -e "axcall pkt1200 <STATION> <DIGI>  Connect to node via a digipeater"
+    echo -e "${NC}"
+
     ;;
   *)
     et-log "Invalid command."

@@ -14,3 +14,7 @@ apt install \
 et-log "Installing rfcomm sudoers rules..."
 cp -v ../overlay/etc/sudoers.d/* /etc/sudoers.d/
 
+et-log "Updating AX.25 port permissions..."
+chgrp -v -R $ET_GROUP /etc/ax25/axports
+chmod -v 664 /etc/ax25/axports
+

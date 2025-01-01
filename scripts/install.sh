@@ -2,7 +2,7 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 16 March 2024
-# Updated : 25 December 2024
+# Updated : 31 December 2024
 # Purpose : Main installer for EmComm Tools OS Community
 
 . ./env.sh
@@ -42,6 +42,7 @@ exitIfNotRoot
 ./install-bbs-server.sh
 ./install-chattervox.sh
 ./install-qttermtcp.sh
+./install-packet.sh
 
 # Install modems
 ./install-ardop.sh

@@ -1,6 +1,7 @@
 #!/bin/bash
 # Author  : Gaston Gonzalez
 # Date    : 17 December 2024
+# Updated : 31 December 2024
 # Purpose : Install QtTermTCP
 set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
@@ -8,7 +9,7 @@ trap 'et-log "\"${last_command}\" command failed with exit code $?."' ERR
 
 . ./env.sh
 
-APP=qtermtcp
+APP=qttermtcp
 VERSION=latest
 DOWNLOAD_FILE=QtTermSource.zip
 BIN_FILE=QtTermTCP

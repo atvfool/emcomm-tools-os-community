@@ -67,14 +67,14 @@ get_mac_or_exit () {
 
 update_ax25_conf() {
 
-    [ -z "$ET_USER_CONFIG" ] && ET_USER_CONFIG="${HOME}/.config/emcomm-tools/user.json"
+  [ -z "$ET_USER_CONFIG" ] && ET_USER_CONFIG="${HOME}/.config/emcomm-tools/user.json"
 
-    CALLSIGN=$(cat ${ET_USER_CONFIG} | jq -r .callsign)
+  CALLSIGN=$(cat ${ET_USER_CONFIG} | jq -r .callsign)
 
-    if [ "${CALLSIGN}" = "N0CALL" ]; then
-      echo -e "${RED}No callsign set. Run et-user first.${NC}"
-      exit 1
-    fi
+  if [ "${CALLSIGN}" = "N0CALL" ]; then
+    error_message "No callsign set. Run et-user first."
+    exit 1
+  fi
 
   GREP_OUT=$(grep ${AX25_PORT} ${AX25_CONF_FILE})
   if [ $? -eq 0 ]; then
@@ -85,7 +85,7 @@ update_ax25_conf() {
 
   fi
 
-  echo -e "${BLUE}Adding AX25 port for ${CALLSIGN}${NC}"
+  info_message "Adding AX25 port for ${CALLSIGN}"
   echo "pkt1200 ${CALLSIGN} 1200 255	2 1200 Packet" >> ${AX25_CONF_FILE}
 }
 
@@ -99,7 +99,7 @@ stop_all_services() {
  
   sleep 3
 
-  PS_OUT=$(ps -ef | grep [r]fcomm) 
+  PS2_OUT=$(ps -ef | grep [r]fcomm) 
   if [ $? -eq 0 ]; then
     info_message "Killing rfcomm process(es)..."
     sudo killall rfcomm
@@ -116,7 +116,7 @@ case $1 in
     if [ $? -eq 0 ]; then
       PAIR_STATUS=$(bluetoothctl info "${MAC}" | grep "Paired:" | awk '{print $2}')
       if [ "${PAIR_STATUS}" == "yes" ]; then
-         error_message "Device with MAC=${MAC} is already paired."
+         error_message "Device with MAC ${MAC} is already paired."
          exit 1
       fi
     fi 
@@ -126,7 +126,7 @@ case $1 in
     echo -e "2. Goto Menu > Pairing and press OK"
     read -p "3. Press [ENTER] when done."
 
-    echo -e "${BLUE}Searching for ${DEVICE_NAME}...${NC}"
+    info_message "Searching for ${DEVICE_NAME}..."
 
     HCI_OUT=$(hcitool scan | grep "${DEVICE_NAME}")
     if [ $? -ne 0 ]; then
@@ -136,17 +136,34 @@ case $1 in
 
 	MAC=$(echo ${HCI_OUT} | awk '{print $1}')
 
-    # Update configuration file
+    # Update configuration file detected MAC address
     sed -i "s|.*mac.*|    \"mac\": \"${MAC}\"|g" ${ACTIVE_RADIO}
 
-    echo -e "Now, run the ${YELLOW}bluetooth${NC} command in another terminal.\n"
+    # Generate an expect script to automatically pair our device.
+    PAIR_SCRIPT="/tmp/pair.sh"
 
-    echo -e "${BLUE}[bluetooth]# ${YELLOW}power on${NC}"
-    echo -e "${BLUE}[bluetooth]# ${YELLOW}scan on${NC}\n"
-    echo -e "Wait until ${DEVICE_NAME} appears.\n"
-    echo -e "${BLUE}[bluetooth]# ${YELLOW}trust ${MAC}${NC}"
-    echo -e "${BLUE}[bluetooth]# ${YELLOW}pair ${MAC}${NC}"
-    echo -e "${BLUE}[${DEVICE_NAME}]# ${YELLOW}quit${NC}"
+cat <<EOF > $PAIR_SCRIPT
+#!/usr/bin/expect -f
+
+set device "${MAC}"
+set timeout 60
+
+spawn bluetoothctl
+expect "Agent registered"
+send "power on\r"
+expect "Changing power on succeeded"
+send "scan on\r"
+expect "${MAC}"
+send "pair ${MAC}\r"
+expect "Pairing successful"
+send "trust ${MAC}\r"
+expect "trust succeeded"
+send "exit\r"
+expect eof
+EOF
+
+    chmod 700 ${PAIR_SCRIPT}
+    ${PAIR_SCRIPT}
 
     ;;
   unpair)
@@ -158,7 +175,7 @@ case $1 in
 
     PAIR_STATUS=$(bluetoothctl info "${MAC}")
     if [ $? -ne 0 ]; then
-       error_message "No ${MAC} device found. Can't unpair."
+       error_message "No device with ${MAC} found. Can't unpair."
        exit 1
     fi
 
@@ -168,7 +185,7 @@ case $1 in
 
     echo -e "${YELLOW}"
     echo -e "You may also want to remove this device from your UV PRO"
-    echo -e "under Menu > General Settings> Connection > Paired Devices." 
+    echo -e "under Menu > General Settings > Connection > Paired Devices." 
     echo -e "${NC}"
 
     ;;

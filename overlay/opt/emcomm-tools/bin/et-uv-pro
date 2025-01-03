@@ -140,9 +140,9 @@ case $1 in
     sed -i "s|.*mac.*|    \"mac\": \"${MAC}\"|g" ${ACTIVE_RADIO}
 
     # Generate an expect script to automatically pair our device.
-    PAIR_SCRIPT="/tmp/pair.sh"
+    PAIR_SCRIPT="${HOME}/pair"
 
-cat <<EOF > $PAIR_SCRIPT
+cat <<EOF > ${PAIR_SCRIPT}
 #!/usr/bin/expect -f
 
 set device "${MAC}"
@@ -162,8 +162,7 @@ send "exit\r"
 expect eof
 EOF
 
-    chmod 700 ${PAIR_SCRIPT}
-    ${PAIR_SCRIPT}
+    sleep 1 && chmod 755 ${PAIR_SCRIPT} && expect ${PAIR_SCRIPT}
 
     ;;
   unpair)

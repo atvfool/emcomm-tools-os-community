@@ -23,7 +23,7 @@ while IFS= read -r radio; do
     MODEL=$(cat $radio | jq -r .model)
 
     options+=("$ID" "$VENDOR $MODEL")
-done < <(find $ET_HOME/conf/radios.d -type f | sort)
+done < <(find $ET_HOME/conf/radios.d -type f | grep -v "bt.json" | sort)
 
 SELECTED_RADIO=$(dialog --clear --menu "Select a radio:" 21 60 10 "${options[@]}" 3>&1 1>&2 2>&3)
 exit_status=$?

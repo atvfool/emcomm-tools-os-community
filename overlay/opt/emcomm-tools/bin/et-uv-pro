@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 1 January 2025
-# Updated  : 2 January 2025
+# Updated  : 3 January 2025
 # Purpose  : Utility for accessing the Bluetooth TNC on the BTECH
 #            UV PRO.           
 
@@ -23,8 +23,8 @@ NC="${ESC}[0m"
 function usage() {
   echo "Usage: $(basename $0) <command>"
   echo "  connect - Connect to radio via Bluetooth" 
-  echo "  pair    - Pair radio via Bluetooth" 
-  echo "  unpair  - Unpair radio via Bluetooth" 
+  echo "  pair    - Pair radio (one-time operation)" 
+  echo "  unpair  - Unpair radio" 
 }
 
 if [ $# -ne 1 ]; then
@@ -99,12 +99,11 @@ stop_all_services() {
  
   sleep 3
 
-  PS2_OUT=$(ps -ef | grep [r]fcomm) 
+  PS2_OUT=$(ps -ef | grep -v krfcommd | grep [r]fcomm) 
   if [ $? -eq 0 ]; then
     info_message "Killing rfcomm process(es)..."
     sudo killall rfcomm
   fi
-
 }
 
 exit_if_no_active_radio
@@ -238,6 +237,7 @@ EOF
     echo -e "-------------------------------  --------------------------------"
     echo -e "axcall pkt1200 <STATION>         Connect directly to a node      "
     echo -e "axcall pkt1200 <STATION> <DIGI>  Connect to node via a digipeater"
+    echo -e "sudo axlisten -a -tttt -c        Monitor inbound and outbound traffic"
     echo -e "${NC}"
 
     ;;

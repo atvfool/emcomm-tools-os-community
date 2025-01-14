@@ -72,8 +72,12 @@ select_direwolf_mode () {
   packet_mode+=("9600" "9600 baud (VHF/UHF)")
   packet_mode+=("300" "300 baud (HF)")
 
-  PACKET_MODE=$(dialog --clear --menu "Select a modem" 16 65 10 "${packet_mode[@]}" 3>&1 1>&2 2>&3)
+  PACKET_MODE=$(dialog --clear --menu "Select a modem" 10 60 10 "${packet_mode[@]}" 3>&1 1>&2 2>&3)
   exit_status=$?
+
+  if [ "${PACKET_MODE}" == "9600" ]; then
+    dialog --title "Note on 9600 Baud" --msgbox "9600 baud is only supported on limited radios and typically requires a special cable.\n\nDon't forget to set the packet settings to 9600 on the radio." 0 0
+  fi 
 
   tput sgr 0 && clear
 

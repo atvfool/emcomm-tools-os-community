@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 6 November 2024
-# Updated  : 5 December 2024
+# Updated  : 14 January 2025
 # Purpose  : Configures the system for a specific mode of operation
 
 # Use a simple text file to save the state of the last mode selected
@@ -18,6 +18,9 @@ MODE_ID_CHAT_CLIENT="chat-chattervox"
 MODE_ID_PACKET_DIGIPEATER="packet-digipeater" 
 MODE_ID_WINLINK_ARDOP="winlink-ardop" 
 MODE_ID_WINLINK_PACKET="winlink-packet" 
+
+# Default to 1200 baud
+PACKET_MODE=simple
 
 # Attempt to stop all EmComm Tools services regardless if they are running.
 stop_all_services() {
@@ -63,6 +66,23 @@ start_and_wait_for_service() {
   exit_on_service_failure ${systemd_unit_name}
 }
 
+select_direwolf_mode () {
+  packet_mode=()
+  packet_mode+=("simple" "1200 baud (default for VHF/UHF)")
+  packet_mode+=("9600" "9600 baud (VHF/UHF)")
+  packet_mode+=("300" "300 baud (HF)")
+
+  PACKET_MODE=$(dialog --clear --menu "Select a modem" 16 65 10 "${packet_mode[@]}" 3>&1 1>&2 2>&3)
+  exit_status=$?
+
+  tput sgr 0 && clear
+
+  if [ ${exit_status} -ne 0 ]; then
+    et-log "No modem selected. Mode will not be started."
+    exit 1
+  fi  
+}
+
 # Build list of options
 options=()
 options+=("${MODE_ID_NONE}" "No mode selected")
@@ -100,12 +120,19 @@ if [ $exit_status -eq 0 ]; then
       et-yaac start
     ;;
     ${MODE_ID_BBS_CLIENT})
-      start_and_wait_for_service et-service-direwolf-simple
+      select_direwolf_mode
+      et-log "Using ${PACKET_MODE} as the modem speed."
+
+      start_and_wait_for_service et-service-direwolf-${PACKET_MODE}
       et-log "Starting Paracon."
       et-paracon start
     ;;
     ${MODE_ID_BBS_CLIENT2})
-      start_and_wait_for_service et-service-direwolf-simple
+      select_direwolf_mode
+      et-log "Using ${PACKET_MODE} as the modem speed."
+
+      start_and_wait_for_service et-service-direwolf-${PACKET_MODE}
+
       et-log "Starting QtTermTCP."
       et-qttermtcp start
     ;;

@@ -1,6 +1,7 @@
 #!/bin/bash
 # Author  : Gaston Gonzalez
-# Date    : 14 January 2024
+# Date    : 14 January 2025
+# Updated : 16 January 2025
 # Purpose : Back up select files from the user's home directory.
 #
 # The backups are limited to the following:
@@ -10,13 +11,6 @@
 TODAY=$(date +"%Y%m%d")
 BACKUP_FILE="${HOME}/etc-user-backup-${HOSTNAME}-${TODAY}.tar.gz"
 
-# All paths are relative to $HOME.
-BACKUP_DIRS=(
-  ".config/emcomm-tools"
-  ".local/share/emcomm-tools"
-  ".local/share/pat"
-)
-
 ESC="\033"
 CYAN="$ESC[36m"
 GREEN="$ESC[0;32m"
@@ -24,6 +18,19 @@ RED="$ESC[0;31m"
 WHITE="$ESC[1;37m"
 YELLOW="$ESC[1;33m"
 NC="$ESC[0m"
+
+if [ -e "${BACKUP_FILE}" ]; then
+  echo -e -n "${RED}A backup file for today exists. Can ${WHITE}${BACKUP_FILE} ${RED}be overwritten? (y/n) ${NC}"
+  read response
+  [[ $response != [yY] ]] && echo "Skipping backup and exiting." && exit 1
+fi
+
+# All paths are relative to $HOME.
+BACKUP_DIRS=(
+  ".config/emcomm-tools"
+  ".local/share/emcomm-tools"
+  ".local/share/pat"
+)
 
 tar -czf ${BACKUP_FILE} \
    --transform 's|^.*\.local|.local|' \

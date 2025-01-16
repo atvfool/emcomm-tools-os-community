@@ -7,6 +7,7 @@
 # The backups are limited to the following:
 # 1. EmComm Tools configuration
 # 2. Winlink email
+# 3. SSH keys
 
 TODAY=$(date +"%Y%m%d")
 BACKUP_FILE="${HOME}/etc-user-backup-${HOSTNAME}-${TODAY}.tar.gz"
@@ -30,6 +31,7 @@ BACKUP_DIRS=(
   ".config/emcomm-tools"
   ".local/share/emcomm-tools"
   ".local/share/pat"
+  ".ssh"
 )
 
 tar -czf ${BACKUP_FILE} \
@@ -49,4 +51,15 @@ for dir in "${BACKUP_DIRS[@]}"; do
   echo "* $dir"
 done
 
-echo -e "\n${YELLOW}If you need files outside of these directories, please back them up manually.${NC}"
+echo -e "\nIf you need files outside of these directories, please back them up manually.\n${NC}"
+
+read -p  "Do you want see the full list of files backed up? (y/n) " response
+[[ $response != [yY] ]] && exit 0 
+
+echo -e "1. ${YELLOW}Press ${WHITE}[SPACE]${YELLOW} to page through the list of files.${NC}"
+echo -e "2. ${YELLOW}Press ${WHITE}[UP/DOWN]${YELLOW} to scroll through the list of files.${NC}"
+echo -e "3. ${YELLOW}Press ${WHITE}q${YELLOW} when done viewing the list of files.\n${NC}"
+read -p "Press any key to view the backup."
+
+tar -tzf ${BACKUP_FILE} | less
+

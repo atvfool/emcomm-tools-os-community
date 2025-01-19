@@ -155,8 +155,14 @@ expect "Changing power on succeeded"
 send "scan on\r"
 expect "${MAC}"
 send "pair ${MAC}\r"
-expect "Enter PIN code"
-send "0000\r"
+expect {
+    "Enter PIN code" {
+        send "0000\r"
+    }
+    "Confirm passkey" {
+        send "yes\r"
+    }
+}
 expect "Pairing successful"
 send "trust ${MAC}\r"
 expect "trust succeeded"

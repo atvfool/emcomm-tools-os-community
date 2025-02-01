@@ -27,3 +27,5 @@ fi
 unzip -o ${DOWNLOAD_FILE}
 
 wine 'VARA Terminal setup (Run as Administrator).exe'
+
+echo -e "${YELLOW}Run ${WHITE}./05-run-regedit.sh${YELLOW}${NC}"

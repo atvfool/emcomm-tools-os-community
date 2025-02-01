@@ -7,19 +7,24 @@ in this directory as your normal user (do not use 'sudo').
 
     ./01-install-wine-deps.sh
 
-2. Install VARA HF. Accept the default settings and do not launch the program.
+2. Install VARA HF. Accept the default settings and uncheck Launch My Program
+   when prompted during the installation.
 
     ./02-install-vara-hf.sh
 
-3. Install VARA FM. Accept the default settings and do not launch the program.
+3. Install VARA FM. Accept the default settings and uncheck Launch My Program
+   when prompted during the installation.
 
     ./03-install-vara-fm.sh
 
-4. Install VARA Terminal. Install VARA FM. Accept the default settings and do not launch the program.
+3. Install VARA Terminal. Accept the default settings and uncheck Launch My
+   Program when prompted during the installation.
 
     ./04-install-vara-terminal.sh
 
-5. Run the registery editor. Follow the instructions in the terminal.
+5. Run the registery editor. Follow the instructions in the terminal. In 
+   this step we will need to map COM port 10 (COM10) to the EmComm Tools
+   CAT control device (/dev/et-cat).
 
     ./05-run-regedit.sh
 
@@ -28,3 +33,6 @@ in this directory as your normal user (do not use 'sudo').
    installation now.
 
     ./06-backup-wine-install.sh
+
+It is important that you do not run any off the VARA programs until after
+the backup is run in step 6.

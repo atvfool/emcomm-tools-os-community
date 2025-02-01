@@ -39,3 +39,5 @@ if [ ! -e "${VARA_HOME}/nt4pdhdll.exe" ]; then
     http://download.microsoft.com/download/winntsrv40/update/5.0.2195.2668/nt4/en-us/nt4pdhdll.exe && unzip nt4pdhdll.exe
   cd ${CWD}
 fi
+
+echo -e "${YELLOW}Run ${WHITE}./03-install-vara-fm.sh${YELLOW} to install VARA FM.${NC}"

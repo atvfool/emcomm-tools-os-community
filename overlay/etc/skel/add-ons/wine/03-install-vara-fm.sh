@@ -3,7 +3,7 @@
 # Author  : Gaston Gonzalez
 # Date    : 20 January 2025
 # Updated : 1 February 2025
-# Purpose : Install VARA HF
+# Purpose : Install VARA FM
 set -e
 
 source ./common-checks.sh
@@ -11,7 +11,7 @@ source ./common-checks.sh
 VERSION="4.3.8"
 DOWNLOAD_FILE="vara-fm-${VERSION}.zip"
 URL="https://downloads.winlink.org/VARA%20Products/VARA%20FM%20v${VERSION}%20setup.zip"
-VARA_HOME="${HOME}/.wine32/drive_c/VARA"
+VARA_HOME="${HOME}/.wine32/drive_c/VARA FM"
 
 et-log "Installing VARA FM..."
 
@@ -34,8 +34,10 @@ if [ ! -e "${VARA_HOME}/nt4pdhdll.exe" ]; then
 
   CWD=$(pwd)
 
-  cd ${VARA_HOME}
+  cd "${VARA_HOME}"
   curl -s -f -L -O \
     http://download.microsoft.com/download/winntsrv40/update/5.0.2195.2668/nt4/en-us/nt4pdhdll.exe && unzip nt4pdhdll.exe
   cd ${CWD}
 fi
+
+echo -e "${YELLOW}Run ${WHITE}./04-install-vara-terminal.sh${YELLOW} to install VARA Terminal.${NC}"

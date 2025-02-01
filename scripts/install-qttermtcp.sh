@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author  : Gaston Gonzalez
 # Date    : 17 December 2024
-# Updated : 31 December 2024
+# Updated : 28 January 2025
 # Purpose : Install QtTermTCP
 set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
@@ -16,6 +16,22 @@ BIN_FILE=QtTermTCP
 INSTALL_DIR="/opt/${APP}-${VERSION}"
 INSTALL_BIN_DIR="${INSTALL_DIR}/bin"
 LINK_PATH="/opt/${APP}"
+
+et-log "Enabling i386 architecture support.."
+dpkg --add-architecture i386
+apt update
+
+et-log "Installing QtTermTCP 32-bit build dependencies..."
+apt install \
+  qtbase5-dev:i386 \
+  qtbase5-dev-tools:i386 \
+  qt5-qmake:i386 \
+  qtchooser:i386 \
+  qtmultimedia5-dev:i386 \
+  libqt5serialport5-dev:i386 \
+  libfftw3-dev:i386 \
+  qttools5-dev-tools:i386 \
+  -y
 
 et-log "Installing QtTermTCP build dependencies..."
 apt install \

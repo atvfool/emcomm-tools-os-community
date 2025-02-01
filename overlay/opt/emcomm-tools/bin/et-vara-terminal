@@ -1,0 +1,21 @@
+#!/bin/bash
+# Author  : Gaston Gonzalez
+# Date    : 20 January 2025
+# Updated : 1 February 2025
+# Purpose : Run VARA Terminal
+
+source /opt/emcomm-tools/bin/et-common
+
+EXE="${HOME}/.wine32/drive_c/VARA/VARA Terminal.exe"
+
+if [[ -e ${EXE} ]]; then
+  wine ~/.wine32/drive_c/VARA/VARA\ Terminal.exe &
+else 
+  echo -e "${RED}"
+  echo -e "${EXE} does not exist."
+  echo -e "You might NOT have installed the windows subsystem (WINE)."
+  echo -e "Navigate to ${WHITE}${HOME}/add-ons/wine${RED} and follow the"
+  echo -e "instructions in the ${WHITE}README.md${RED} file."
+  echo -e "${NC}"
+  exit 1
+fi

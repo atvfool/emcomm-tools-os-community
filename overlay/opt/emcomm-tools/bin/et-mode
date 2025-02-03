@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 6 November 2024
-# Updated  : 14 January 2025
+# Updated  : 3 February 2025
 # Purpose  : Configures the system for a specific mode of operation
 
 # Use a simple text file to save the state of the last mode selected
@@ -87,6 +87,18 @@ select_direwolf_mode () {
   fi  
 }
 
+select_winlink_mode () {
+  winlink_mode=()
+
+  BLUETOOTH_TNC_CHECK=$(ps -ef | grep "[r]fcomm connect")
+  if [[ $? -eq 0 ]]; then
+    et-log "AX.25 over Bluetooth connected. Configuring Winlink for native AX.25"
+    start_and_wait_for_service et-service-winlink-native-packet
+    min http://localhost:8080
+    exit 0
+  fi
+}
+
 # Build list of options
 options=()
 options+=("${MODE_ID_NONE}" "No mode selected")
@@ -150,11 +162,13 @@ if [ $exit_status -eq 0 ]; then
       et-log "Packet digipeater now running."
     ;;
     ${MODE_ID_WINLINK_ARDOP}) 
+      et-log "Using ${PACKET_MODE} as the modem speed."
       start_and_wait_for_service et-service-ardop
       start_and_wait_for_service et-service-winlink-ardop
       min http://localhost:8080
     ;;
     ${MODE_ID_WINLINK_PACKET})
+      select_winlink_mode
       start_and_wait_for_service et-service-direwolf-simple 
       start_and_wait_for_service et-service-winlink-packet
       min http://localhost:8080

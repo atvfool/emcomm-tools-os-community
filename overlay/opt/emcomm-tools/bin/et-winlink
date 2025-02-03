@@ -2,7 +2,7 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 4 November 2024
-# Updated : 12 December 2024
+# Updated : 3 February 2025
 # Purpose : Wrapper script for starting YAAC with PnP support
 #
 # Preconditions:
@@ -13,14 +13,17 @@
 # 1. Callsign, Winlink  password, and grid are updated are updated 
 # 2. pat http is started
 
+source /opt/emcomm-tools/bin/et-common
+
 PAT_CONF_FILE=${HOME}/.config/pat/config.json
 PAT_CONF_FILE_TEMPLATE=/etc/skel/.config/pat/config.json
 
 usage() {
   echo "usage: $(basename $0) <command>"
   echo "  <command>"
-  echo "    start-ardop     - Start Pat Winlink in ardop mode"
-  echo "    start-packet    - Start Pat Winlink in packet mode"
+  echo "    start-ardop         - Start Pat Winlink in ardop mode"
+  echo "    start-packet        - Start Pat Winlink in packet mode"
+  echo "    start-native-packet - Start Pat Winlink in native AX.25 packet mode"
 }
 
 if [ $# -ne 1 ]; then
@@ -60,8 +63,26 @@ start_packet() {
     notify_user "Dire Wolf not running. Run: et-direwolf simple-packet"
     exit 1
   fi
-
+  
   update_config packet
+
+  CMD="pat http"
+  et-log "Starting Pat with: ${CMD}"
+
+  ${CMD}
+}
+
+# Only the BTECH UV PRO is supported in this mode
+start_native_packet() {
+ 
+  BLUETOOTH_TNC_CHECK=$(ps -ef | grep "[r]fcomm connect")
+  if [[ $? -ne 0 ]]; then
+    echo -e "${RED}Can't start Pat in native AX.25 packet mode."
+    echo -e "If you have a UV Pro, first run: ${YELLOW}et-uv-pro connect${NC}"
+    exit 1
+  fi
+
+  update_config native-packet
 
   CMD="pat http"
   et-log "Starting Pat with: ${CMD}"
@@ -82,6 +103,18 @@ update_config () {
     exit 1
   fi
 
+  case $1 in
+    ardop)
+      PAT_CONF_FILE_TEMPLATE=/opt/emcomm-tools/conf/template.d/winlink/config.ardop.json
+      ;;
+    packet)
+      PAT_CONF_FILE_TEMPLATE=/opt/emcomm-tools/conf/template.d/winlink/config.ax25-agw.json
+      ;;
+    native-packet)
+      PAT_CONF_FILE_TEMPLATE=/opt/emcomm-tools/conf/template.d/winlink/config.ax25-native.json
+      ;;
+  esac
+
   et-log "Updating Pat configuration file: ${PAT_CONF_FILE}..."
   cp -v ${PAT_CONF_FILE_TEMPLATE} ${PAT_CONF_FILE}
 
@@ -89,15 +122,6 @@ update_config () {
   sed -i "s|{{ET_WINLINK_PASSWD}}|${WINLINK_PASSWD}|g" ${PAT_CONF_FILE}
   sed -i "s|{{ET_GRID}}|${GRID}|g" ${PAT_CONF_FILE}
 
-  # Enable the P2P listener for the current mode selected (ARDOP or AX.25)
-  case $1 in
-    ardop)
-      sed -i "s|{{ET_WINLINK_LISTEN}}|ardop|g" ${PAT_CONF_FILE}
-      ;;
-    packet)
-      sed -i "s|{{ET_WINLINK_LISTEN}}|ax25|g" ${PAT_CONF_FILE}
-      ;;
-  esac
 }
 
 case $1 in
@@ -106,6 +130,9 @@ case $1 in
     ;;
   start-packet)
     start_packet
+    ;;
+  start-native-packet)
+    start_native_packet
     ;;
   *)
     echo "Invalid command."

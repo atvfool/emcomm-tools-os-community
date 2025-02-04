@@ -17,22 +17,17 @@ in this directory as your normal user (do not use 'sudo').
 
     ./03-install-vara-fm.sh
 
-3. Install VARA Terminal. Accept the default settings and uncheck Launch My
-   Program when prompted during the installation.
-
-    ./04-install-vara-terminal.sh
-
-5. Run the registery editor. Follow the instructions in the terminal. In 
+4. Run the registery editor. Follow the instructions in the terminal. In 
    this step we will need to map COM port 10 (COM10) to the EmComm Tools
    CAT control device (/dev/et-cat).
 
-    ./05-run-regedit.sh
+    ./04-run-regedit.sh
 
-6. If you want to include your WINE installation in a future EmComm Tools
+5. If you want to include your WINE installation in a future EmComm Tools
    Community image build, run the following to make a backup of your WINE
    installation now.
 
-    ./06-backup-wine-install.sh
+    ./05-backup-wine-install.sh
 
 It is important that you do not run any off the VARA programs until after
-the backup is run in step 6.
+the backup is run in step 5.

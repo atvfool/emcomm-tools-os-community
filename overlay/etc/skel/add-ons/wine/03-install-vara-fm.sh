@@ -40,4 +40,4 @@ if [ ! -e "${VARA_HOME}/nt4pdhdll.exe" ]; then
   cd ${CWD}
 fi
 
-echo -e "${YELLOW}Run ${WHITE}./04-install-vara-terminal.sh${YELLOW} to install VARA Terminal.${NC}"
+echo -e "${YELLOW}Run ${WHITE}./04-run-regedit.sh${YELLOW} to run registry editor.${NC}"

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author  : Gaston Gonzalez
 # Date    : 20 January 2025
-# Updated : 1 February 2025
+# Updated : 4 February 2025
 # Purpose : Run regedit
 set -e
 

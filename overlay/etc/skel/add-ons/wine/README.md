@@ -29,5 +29,5 @@ in this directory as your normal user (do not use 'sudo').
 
     ./05-backup-wine-install.sh
 
-It is important that you do not run any off the VARA programs until after
+It is important that you do not run any of the VARA programs until after
 the backup is run in step 5.

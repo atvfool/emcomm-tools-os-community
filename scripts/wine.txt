@@ -5,7 +5,7 @@ session of Cubic. They must be installed on a running version of
 EmComm Tools Community via a desktop session.
 
 If you previously made a backup copy of your WINE installation using
-the "$HOME/add-ons/wine/06-backup-wine-install.sh" script and would 
+the "$HOME/add-ons/wine/05-backup-wine-install.sh" script and would 
 like to bake it into this ISO image, perform the following:
 
 1. Change into the skeleton directory now with:

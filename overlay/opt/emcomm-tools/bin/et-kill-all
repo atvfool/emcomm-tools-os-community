@@ -6,6 +6,15 @@
 # Purpose  : Stops all EmComm Tools sound-based services (i.e. modems) and
 #            amatuer radio applications to ensure a clean start for the next mode.
 
+stop_pat() {
+  PS_OUT=$(ps -ef | grep "[p]at http")
+
+  if [[ $? -eq 0 ]]; then
+    PAT_PID=$(ps -ef | grep "[p]at http" | awk '{print $2}')
+    kill -9 ${PAT_PID}
+  fi
+}
+
 # 1. Attempt to stop all EmComm Tools services regardless if they are running.
 # 2. Stop the applications first, then the modems.
 stop_all_services() {
@@ -23,6 +32,8 @@ stop_all_services() {
   pkill et-winlink
   pkill et-vara
   pkill VARA 
+
+  stop_pat
 }
 
 et-log "Stopping all services"

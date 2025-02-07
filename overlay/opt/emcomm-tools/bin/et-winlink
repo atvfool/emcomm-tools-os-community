@@ -2,7 +2,7 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 4 November 2024
-# Updated : 3 February 2025
+# Updated : 4 February 2025
 # Purpose : Wrapper script for starting YAAC with PnP support
 #
 # Preconditions:
@@ -24,6 +24,8 @@ usage() {
   echo "    start-ardop         - Start Pat Winlink in ardop mode"
   echo "    start-packet        - Start Pat Winlink in packet mode"
   echo "    start-native-packet - Start Pat Winlink in native AX.25 packet mode"
+  echo "    start-vara-fm       - Start Pat Winlink in VARA FM mode"
+  echo "    start-vara-hf       - Start Pat Winlink in VARA HF mode"
 }
 
 if [ $# -ne 1 ]; then
@@ -90,6 +92,26 @@ start_native_packet() {
   ${CMD}
 }
 
+start_vara_fm() {
+ 
+  update_config vara-fm
+
+  CMD="pat http"
+  et-log "Starting Pat with: ${CMD}"
+
+  ${CMD}
+}
+
+start_vara_hf() {
+ 
+  update_config vara-hf
+
+  CMD="pat http"
+  et-log "Starting Pat with: ${CMD}"
+
+  ${CMD}
+}
+
 update_config () {
 
   [ -z "$ET_USER_CONFIG" ] && ET_USER_CONFIG="${HOME}/.config/emcomm-tools/user.json"
@@ -113,6 +135,12 @@ update_config () {
     native-packet)
       PAT_CONF_FILE_TEMPLATE=/opt/emcomm-tools/conf/template.d/winlink/config.ax25-native.json
       ;;
+    vara-fm)
+      PAT_CONF_FILE_TEMPLATE=/opt/emcomm-tools/conf/template.d/winlink/config.vara-fm.json
+      ;;
+    vara-hf)
+      PAT_CONF_FILE_TEMPLATE=/opt/emcomm-tools/conf/template.d/winlink/config.vara-hf.json
+      ;;
   esac
 
   et-log "Updating Pat configuration file: ${PAT_CONF_FILE}..."
@@ -121,7 +149,6 @@ update_config () {
   sed -i "s|{{ET_CALLSIGN}}|${CALLSIGN}|g" ${PAT_CONF_FILE}
   sed -i "s|{{ET_WINLINK_PASSWD}}|${WINLINK_PASSWD}|g" ${PAT_CONF_FILE}
   sed -i "s|{{ET_GRID}}|${GRID}|g" ${PAT_CONF_FILE}
-
 }
 
 case $1 in
@@ -133,6 +160,12 @@ case $1 in
     ;;
   start-native-packet)
     start_native_packet
+    ;;
+  start-vara-fm)
+    start_vara_fm
+    ;;
+  start-vara-hf)
+    start_vara_hf
     ;;
   *)
     echo "Invalid command."

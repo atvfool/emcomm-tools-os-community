@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 11 October 2024
-# Updated  : 3 February 2025
+# Updated  : 5 February 2025
 # Purpose  : A script for managaing plug-and-play radios
 set -e
 
@@ -51,8 +51,8 @@ if [ $exit_status -eq 0 ]; then
   BLUETOOTH_TNC_CHECK=$(ps -ef | grep "[r]fcomm connect")
   if [[ $? -eq 0 ]]; then
     et-log "Killing running processes for Bluetooth TNC"
-    sudo killall kissattach
-    sudo killall rfcomm
+    sudo /usr/bin/killall kissattach
+    sudo /usr/bin/killall rfcomm
   fi
 
   printf "%-20s %-10s %-10s\n" "Radio ID" "Vendor" "Model"

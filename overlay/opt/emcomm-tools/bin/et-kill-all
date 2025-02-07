@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 12 November 2024
-# Updated  : 3 February 2025
+# Updated  : 7 February 2025
 # Purpose  : Stops all EmComm Tools sound-based services (i.e. modems) and
 #            amatuer radio applications to ensure a clean start for the next mode.
 
@@ -18,6 +18,11 @@ stop_all_services() {
   systemctl --user stop et-service-direwolf-simple
   systemctl --user stop et-service-direwolf-aprs-digipeater
   systemctl --user stop et-service-direwolf-packet-digipeater
+
+  # Stop VARA with a sledge hammer
+  pkill et-winlink
+  pkill et-vara
+  pkill VARA 
 }
 
 et-log "Stopping all services"

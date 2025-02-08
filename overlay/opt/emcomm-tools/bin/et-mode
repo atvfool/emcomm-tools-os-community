@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 6 November 2024
-# Updated  : 5 February 2025
+# Updated  : 7 February 2025
 # Purpose  : Configures the system for a specific mode of operation
 
 # Use a simple text file to save the state of the last mode selected
@@ -223,7 +223,7 @@ if [ $exit_status -eq 0 ]; then
       start_and_wait_for_vara et-vara-hf
       et-winlink start-vara-hf &
       sleep 1
-      min http://localhost:8080
+      min http://localhost:8080 2>/dev/null
     ;;
     *)
       et-log "Mode ${SELECTED_MODE} not yet supported"

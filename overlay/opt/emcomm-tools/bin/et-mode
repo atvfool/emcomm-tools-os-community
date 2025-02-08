@@ -2,11 +2,13 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 6 November 2024
-# Updated  : 7 February 2025
+# Updated  : 8 February 2025
 # Purpose  : Configures the system for a specific mode of operation
 
 # Use a simple text file to save the state of the last mode selected
 MODE_STATUS_FILE="${HOME}/.config/emcomm-tools/et-mode"
+
+QTTERMTCP_CONF_FILE="${HOME}/.config/QtTermTCP.ini"
 
 # List of supported modes of operation
 MODE_ID_NONE="none"
@@ -21,8 +23,8 @@ MODE_ID_WINLINK_PACKET="winlink-packet"
 MODE_ID_WINLINK_VARA_HF="winlink-vara-hf" 
 MODE_ID_WINLINK_VARA_FM="winlink-vara-fm" 
 
-# Default to 1200 baud
-PACKET_MODE=simple
+# Default to 1200 baud packet for terminal sessions
+TERM_MODE=1200
 
 # Attempt to stop all EmComm Tools services regardless if they are running.
 stop_all_services() {
@@ -93,16 +95,24 @@ start_and_wait_for_vara() {
   done
 }
 
-select_direwolf_mode () {
-  packet_mode=()
-  packet_mode+=("simple" "1200 baud (default for VHF/UHF)")
-  packet_mode+=("9600" "9600 baud (VHF/UHF)")
-  packet_mode+=("300" "300 baud (HF)")
+select_term_mode () {
+  term_mode=()
+  term_mode+=("1200" "1200 baud (default for VHF/UHF)")
+  term_mode+=("9600" "9600 baud (VHF/UHF)")
+  term_mode+=("300" "300 baud (HF)")
 
-  PACKET_MODE=$(dialog --clear --menu "Select a modem" 10 60 10 "${packet_mode[@]}" 3>&1 1>&2 2>&3)
+  if [ -e "${HOME}/.wine32/drive_c/VARA FM/VARAFM.exe" ]; then
+    term_mode+=("vara-fm" "VARA FM")
+  fi
+
+  if [ -e "${HOME}/.wine32/drive_c/VARA/VARA.exe" ]; then
+    term_mode+=("vara-hf" "VARA HF")
+  fi
+
+  TERM_MODE=$(dialog --clear --menu "Select a modem" 13 60 10 "${term_mode[@]}" 3>&1 1>&2 2>&3)
   exit_status=$?
 
-  if [ "${PACKET_MODE}" == "9600" ]; then
+  if [ "${TERM_MODE}" == "9600" ]; then
     dialog --title "Note on 9600 Baud" --msgbox "9600 baud is only supported on limited radios and typically requires a special cable.\n\nDon't forget to set the packet settings to 9600 on the radio." 0 0
   fi 
 
@@ -172,18 +182,38 @@ if [ $exit_status -eq 0 ]; then
       et-yaac start
     ;;
     ${MODE_ID_BBS_CLIENT})
-      select_direwolf_mode
-      et-log "Using ${PACKET_MODE} as the modem speed."
+      select_term_mode
+      et-log "Using ${TERM_MODE} as the modem speed."
 
-      start_and_wait_for_service et-service-direwolf-${PACKET_MODE}
+      start_and_wait_for_service et-service-direwolf-${TERM_MODE}
       et-log "Starting Paracon."
       et-paracon start
     ;;
     ${MODE_ID_BBS_CLIENT2})
-      select_direwolf_mode
-      et-log "Using ${PACKET_MODE} as the modem speed."
+      select_term_mode
+      et-log "Using ${TERM_MODE} as the modem."
 
-      start_and_wait_for_service et-service-direwolf-${PACKET_MODE}
+      case "${TERM_MODE}" in
+        "1200")
+          start_and_wait_for_service et-service-direwolf-simple
+        ;;
+        "9600")
+          start_and_wait_for_service et-service-direwolf-9600
+        ;;
+        "300")
+          start_and_wait_for_service et-service-direwolf-300
+        ;;
+        "vara-fm")
+          sed -i "s|^VARAFM=.*|VARAFM=1|g" ${QTTERMTCP_CONF_FILE}
+          sed -i "s|^VARAHF=.*|VARAHF=0|g" ${QTTERMTCP_CONF_FILE}
+          start_and_wait_for_vara et-vara-fm
+        ;;
+        "vara-hf")
+          sed -i "s|^VARAFM=.*|VARAFM=0|g" ${QTTERMTCP_CONF_FILE}
+          sed -i "s|^VARAHF=.*|VARAHF=1|g" ${QTTERMTCP_CONF_FILE}
+          start_and_wait_for_vara et-vara-hf
+        ;;
+      esac
 
       et-log "Starting QtTermTCP."
       et-qttermtcp start
@@ -198,7 +228,7 @@ if [ $exit_status -eq 0 ]; then
       et-log "Packet digipeater now running."
     ;;
     ${MODE_ID_WINLINK_ARDOP}) 
-      et-log "Using ${PACKET_MODE} as the modem speed."
+      et-log "Using ARDOP as the modem."
       start_and_wait_for_service et-service-ardop
       start_and_wait_for_service et-service-winlink-ardop
       min http://localhost:8080

@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 6 November 2024
-# Updated  : 8 February 2025
+# Updated  : 9 February 2025
 # Purpose  : Configures the system for a specific mode of operation
 
 # Use a simple text file to save the state of the last mode selected
@@ -101,12 +101,15 @@ select_term_mode () {
   term_mode+=("9600" "9600 baud (VHF/UHF)")
   term_mode+=("300" "300 baud (HF)")
 
-  if [ -e "${HOME}/.wine32/drive_c/VARA FM/VARAFM.exe" ]; then
-    term_mode+=("vara-fm" "VARA FM")
-  fi
+  # Only allow VARA terminal modes when using QtTermTCP
+  if [[ "${SELECTED_MODE}" == "${MODE_ID_BBS_CLIENT2}" ]]; then
+    if [ -e "${HOME}/.wine32/drive_c/VARA FM/VARAFM.exe" ]; then
+      term_mode+=("vara-fm" "VARA FM")
+    fi
 
-  if [ -e "${HOME}/.wine32/drive_c/VARA/VARA.exe" ]; then
-    term_mode+=("vara-hf" "VARA HF")
+    if [ -e "${HOME}/.wine32/drive_c/VARA/VARA.exe" ]; then
+      term_mode+=("vara-hf" "VARA HF")
+    fi
   fi
 
   TERM_MODE=$(dialog --clear --menu "Select a modem" 13 60 10 "${term_mode[@]}" 3>&1 1>&2 2>&3)

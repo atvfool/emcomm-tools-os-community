@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 6 October 2024
-# Updated  : 17 December 2024
+# Updated  : 7 February 2025
 # Purpose  : Utility script for dumping system information
 
 function usage() {
@@ -183,6 +183,8 @@ case $1 in
     MODE_ID_APRS_CLIENT="aprs-client"
     MODE_ID_WINLINK_ARDOP="winlink-ardop"
     MODE_ID_WINLINK_PACKET="winlink-packet"
+    MODE_ID_WINLINK_VARA_HF="winlink-vara-hf"
+    MODE_ID_WINLINK_VARA_FM="winlink-vara-fm"
 
     if [ ! -e /dev/et-audio ]; then 
       echo "Run 'et-mode' to set"
@@ -217,6 +219,12 @@ case $1 in
       ;;
       ${MODE_ID_WINLINK_PACKET})
         echo "Winlink Packet"
+      ;;
+      ${MODE_ID_WINLINK_VARA_FM})
+        echo "Winlink VARA FM"
+      ;;
+      ${MODE_ID_WINLINK_VARA_HF})
+        echo "Winlink VARA HF"
       ;;
       *)
         echo "Unknown"

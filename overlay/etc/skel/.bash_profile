@@ -1,6 +1,6 @@
 # Author      : Gaston Gonzalez
 # Date        : 23 April 2024
-# Updated     : 25 December 2024
+# Updated     : 1 February 2025
 # Description : bash profile
 
 # All user accounts should be in the 'et-data' group to allow data sharing with
@@ -29,3 +29,8 @@ echo -e "${NC}"
 
 export ET_USER_CONFIG=${HOME}/.config/emcomm-tools/user.json
 export ET_LOG_DIR=${HOME}/.local/share/emcomm-tools
+
+# Export environment variables to support WINE installs for VARA
+export WINARCH="win32"
+export WINEPREFIX="$HOME/.wine32"
+export WINEDEBUG=-all

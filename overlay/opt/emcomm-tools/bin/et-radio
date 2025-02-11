@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 11 October 2024
-# Updated  : 14 December 2024
+# Updated  : 5 February 2025
 # Purpose  : A script for managaing plug-and-play radios
 set -e
 
@@ -48,6 +48,13 @@ if [ $exit_status -eq 0 ]; then
   VENDOR=$(cat ${ACTIVE_RADIO} | jq -r .vendor)
   MODEL=$(cat ${ACTIVE_RADIO} | jq -r .model)
 
+  BLUETOOTH_TNC_CHECK=$(ps -ef | grep "[r]fcomm connect")
+  if [[ $? -eq 0 ]]; then
+    et-log "Killing running processes for Bluetooth TNC"
+    sudo /usr/bin/killall kissattach
+    sudo /usr/bin/killall rfcomm
+  fi
+
   printf "%-20s %-10s %-10s\n" "Radio ID" "Vendor" "Model"
   printf "%-20s %-10s %-10s\n\n" $ID "$VENDOR" "$MODEL"
 
@@ -55,7 +62,6 @@ if [ $exit_status -eq 0 ]; then
   cat ${ACTIVE_RADIO} | jq -r '.notes[] | "* \(.)"'
   echo -e "${NC}"
 
-  
   printf "${GREEN}REQUIRED ACTIONS\n"
   printf "1. Apply the settings above to your radio.\n"
   printf "2. Plug in the USB cable for your radio. If it is already\n"

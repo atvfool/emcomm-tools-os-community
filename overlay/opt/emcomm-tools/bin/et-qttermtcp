@@ -2,6 +2,7 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 17 December 2024
+# Updated : 8 February 2025
 # Purpose : Wrapper script for starting JS8Call with PnP support
 #
 # Preconditions
@@ -57,7 +58,8 @@ update-config () {
       exit 1
     fi
 
-    sed -i "s|^AGWTermCall.*|AGWTermCall=${CALLSIGN}|" ${CONF_FILE} 
+    sed -i "s|^AGWTermCall.*|AGWTermCall=${CALLSIGN}|g" ${CONF_FILE} 
+    sed -i "s|^VARATermCall.*|VARATermCall=${CALLSIGN}|g" ${CONF_FILE} 
     sed -i "s|^YAPPPath.*|YAPPPath=${HOME}/Downloads|" ${CONF_FILE} 
 
     et-log "Updated QtTermTCP configuration with user callsign '${CALLSIGN}'"

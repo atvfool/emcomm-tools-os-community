@@ -2,7 +2,7 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 16 March 2024
-# Updated : 11 November 2024
+# Updated : 11 February 2024
 # Purpose : Install base tools and configuration
 set -e
 
@@ -19,11 +19,13 @@ apt install \
   cmake \
   curl \
   gpg \
+  imagemagick \
   jq \
   net-tools \
   openjdk-20-jdk \
   openssh-server \
   screen \
+  steghide \
   stow \
   xsel \
   tree \

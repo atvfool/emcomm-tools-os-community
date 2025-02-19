@@ -1,6 +1,7 @@
 #!/bin/bash
 # Author  : Gaston Gonzalez
 # Date    : 1 February 2025
+# Updated : 17 February 2025
 # Purpose : Performs various checks to ensure that changes can be made
 #           to a user's local WINE installation.
 
@@ -17,9 +18,9 @@ if [[ "${EUID}" -eq 0 ]]; then
   exit 1
 fi
 
-if [[ -z "${WINARCH}" ]]; then
-  echo -e "The WINARCH environment variable is not set. Setting it for you."
-  export WINARCH="win32"
+if [[ -z "${WINEARCH}" ]]; then
+  echo -e "The WINEARCH environment variable is not set. Setting it for you."
+  export WINEARCH="win32"
 fi
 
 if [[ -z "${WINEPREFIX}" ]]; then

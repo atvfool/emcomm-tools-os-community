@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 6 November 2024
-# Updated  : 9 February 2025
+# Updated  : 17 February 2025
 # Purpose  : Configures the system for a specific mode of operation
 
 # Use a simple text file to save the state of the last mode selected
@@ -188,7 +188,18 @@ if [ $exit_status -eq 0 ]; then
       select_term_mode
       et-log "Using ${TERM_MODE} as the modem speed."
 
-      start_and_wait_for_service et-service-direwolf-${TERM_MODE}
+      case "${TERM_MODE}" in
+        "1200")
+          start_and_wait_for_service et-service-direwolf-simple
+        ;;
+        "9600")
+          start_and_wait_for_service et-service-direwolf-9600
+        ;;
+        "300")
+          start_and_wait_for_service et-service-direwolf-300
+        ;;
+      esac
+        
       et-log "Starting Paracon."
       et-paracon start
     ;;

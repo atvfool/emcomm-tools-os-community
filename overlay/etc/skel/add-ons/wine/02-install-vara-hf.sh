@@ -2,28 +2,19 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 20 January 2025
-# Updated : 1 February 2025
+# Updated : 28 February 2025
 # Purpose : Install VARA HF
-set -e
 
 source ./common-checks.sh
 
-VERSION="4.8.9"
-DOWNLOAD_FILE="vara-hf-${VERSION}.zip"
-URL="https://downloads.winlink.org/VARA%20Products/VARA%20HF%20v${VERSION}%20setup.zip"
 VARA_HOME="${HOME}/.wine32/drive_c/VARA"
+VARA_PATTERN="VARA%20HF"
 
-et-log "Installing VARA HF..."
+./vara-downloader.sh "${VARA_PATTERN}"
+[[ $? -ne 0 ]] && et-log "Error downloading VARA HF" && exit 1
 
-if [ ! -e ${DOWNLOAD_FILE} ]; then
-  et-log "Downloading VARA HF ${version} from ${URL}"
-  curl -s -f -L -o ${DOWNLOAD_FILE} "${URL}"
-fi 
-
-if [ $? -ne 0 ]; then
-  et-log "Error downloading VARA HF ${VERSION}."
-  exit 1
-fi
+DOWNLOAD_FILE=$(ls *.zip | grep "${VARA_PATTERN}")
+[[ ! -e "${DOWNLOAD_FILE}" ]] && et-log "VARA download file not found" && exit 1
 
 unzip -o ${DOWNLOAD_FILE}
 

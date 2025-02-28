@@ -2,7 +2,7 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 16 March 2024
-# Updated : 11 February 2024
+# Updated : 28 February 2025
 # Purpose : Install base tools and configuration
 set -e
 
@@ -25,6 +25,7 @@ apt install \
   openjdk-20-jdk \
   openssh-server \
   screen \
+  socat \
   steghide \
   stow \
   xsel \

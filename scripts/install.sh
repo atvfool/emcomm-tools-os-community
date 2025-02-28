@@ -2,7 +2,7 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 16 March 2024
-# Updated : 20 January 2025
+# Updated : 28 February 2025
 # Purpose : Main installer for EmComm Tools OS Community
 
 . ./env.sh
@@ -15,6 +15,7 @@ exitIfNotRoot
 
 ./install-base.sh
 ./install-dev-tools.sh
+./install-pup.sh
 ./install-browser.sh
 ./remove-packages.sh
 ./install-branding.sh

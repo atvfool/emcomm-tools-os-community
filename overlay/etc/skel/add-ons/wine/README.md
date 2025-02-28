@@ -17,7 +17,7 @@ in this directory as your normal user (do not use 'sudo').
 
     ./03-install-vara-fm.sh
 
-4. Run the registery editor. Follow the instructions in the terminal. In 
+4. Run the registry editor. Follow the instructions in the terminal. In 
    this step we will need to map COM port 10 (COM10) to the EmComm Tools
    CAT control device (/dev/et-cat).
 
@@ -31,3 +31,25 @@ in this directory as your normal user (do not use 'sudo').
 
 It is important that you do not run any of the VARA programs until after
 the backup is run in step 5.
+
+## Including VARA in an ETC ISO image
+
+If you want to include VARA in a future EmComm Tools Community image build,
+perform the following in Cubic after the main install script is finished.
+
+1. Change into the `/etc/skel` directory.
+
+2. Copy the WINE backup file created in step 5 using the file copy option
+   in Cubic (i.e. `etc-wine-backup-HOST-YYYYMMDD.tar.gz`).
+
+3. Unpack the backup file. This will create `/etc/skel/.wine32`.
+
+```
+tar -xzf etc-wine-backup-*
+```
+
+4. Delete the backup file on the Cubic session to save on space.
+
+```
+rm etc-wine-backup-*
+```

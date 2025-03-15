@@ -246,13 +246,18 @@ EOF
 
     update_ax25_conf 
 
-    sudo rfcomm connect ${BT_DEVICE} ${MAC} 1>/dev/null 2>&1 &
+    sudo rfcomm connect /dev/rfcomm0 ${MAC} 1>/dev/null 2>&1 &
 
     sleep 10 && reset
 
     if [[ ! -e "${BT_DEVICE}" ]]; then
-      echo -e "${RED}Failed to connect via Bluetooth${NC}\n"
-      echo -e "${YELLOW}Try turning off and back on your radio${NC}\n"
+      echo -e "${RED}Failed to connect via Bluetooth${NC}"
+      echo -e "${YELLOW}"
+      echo -e "1. Try turning off and back on your radio."
+      echo -e "2. Check your radio and ensure that ${BLUE}$(hostname)${YELLOW} is listed under:"
+      echo -e "   Menu > General Settings> Connection > Paired Devices: $(hostname)."
+      echo -e ""
+      echo -e "   If it is not listed, re-run: ${WHITE}$(basename $0) pair${NC}\n"
       exit 1
     fi
 

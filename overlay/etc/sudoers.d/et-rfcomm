@@ -4,3 +4,5 @@
 
 %bluetooth ALL=(ALL) NOPASSWD: /usr/bin/killall kissattach
 %bluetooth ALL=(ALL) NOPASSWD: /usr/bin/killall rfcomm
+
+%bluetooth ALL=(ALL) NOPASSWD: /opt/emcomm-tools/bin/et-kill-bt

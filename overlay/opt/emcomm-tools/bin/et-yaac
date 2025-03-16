@@ -51,6 +51,7 @@ start() {
     PS_OUT=$(ps -ef | grep [d]irewolf)
     if [[ $? -eq 0 ]]; then
       et-log "Starting YAAC in Dire Wolf mode with: ${CMD}"
+      ${CMD}
     else
       et-log "Can't start YAAC. Dire Wolf or Bluetooth TNC services not running."
       exit 1

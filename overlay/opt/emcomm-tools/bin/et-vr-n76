@@ -1,10 +1,9 @@
 #!/bin/bash
 #
-# Authors  : Gaston Gonzalez
-#          : Clifton Jones
+# Author   : Gaston Gonzalez
 # Date     : 1 January 2025
-# Updated  : 15 March 2025
-# Purpose  : Utility for accessing the Bluetooth TNC on the VGC VR-N76.           
+# Updated  : 16 March 2025
+# Purpose  : Utility for accessing the Bluetooth TNC on the BTECH UV PRO.           
 source /opt/emcomm-tools/bin/et-common
 
 CLEAN_UP=1
@@ -265,7 +264,7 @@ EOF
     stop_all_services
 
     echo -e "\nSelect a packet application to start:"
-    options=("axcall" "QtTermTCP" "Winlink" "Exit")
+    options=("axcall" "QtTermTCP" "Winlink" "YAAC" "Exit")
 
     select opt in "${options[@]}"
     do
@@ -292,6 +291,10 @@ EOF
           do_kiss_attach
           start_and_wait_for_service et-service-winlink-native-packet
           min http://localhost:8080 1>/dev/null 2>&1
+          break
+          ;;
+        "YAAC")
+          et-yaac start
           break
           ;;
         "Exit")

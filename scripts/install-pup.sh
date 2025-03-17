@@ -18,6 +18,8 @@ curl -s -f -L -o ${ZIP_FILE} ${URL}
 
 [[ $? -ne 0 ]] && et-log "Error fetching pup" && exit 1 
 
+[ ! -e $ET_DIST_DIR ] && mkdir -v $ET_DIST_DIR
+
 mv -v ${ZIP_FILE} ${ET_DIST_DIR}
 
 CWD_DIR=$(pwd)

@@ -2,18 +2,13 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 11 October 2024
-# Updated  : 5 February 2025
+# Updated  : 16 March 2025
 # Purpose  : A script for managaing plug-and-play radios
-set -e
+source /opt/emcomm-tools/bin/et-common
 
 ACTIVE_RADIO="${ET_HOME}/conf/radios.d/active-radio.json"
 
 NO_RADIO_ID="no-radio"
-
-YELLOW="\033[1;33m"
-GREEN="\033[0;32m"
-RED="\033[0;31m"
-NC="\033[0m"
 
 options=()
 options+=("${NO_RADIO_ID}" "No radio")
@@ -51,8 +46,7 @@ if [ $exit_status -eq 0 ]; then
   BLUETOOTH_TNC_CHECK=$(ps -ef | grep "[r]fcomm connect")
   if [[ $? -eq 0 ]]; then
     et-log "Killing running processes for Bluetooth TNC"
-    sudo /usr/bin/killall kissattach
-    sudo /usr/bin/killall rfcomm
+    sudo /opt/emcomm-tools/bin/et-kill-bt
   fi
 
   printf "%-20s %-10s %-10s\n" "Radio ID" "Vendor" "Model"

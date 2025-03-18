@@ -1,8 +1,9 @@
 #!/bin/bash
 #
 # Author   : Gaston Gonzalez
+#          : Cliff Jones
 # Date     : 1 January 2025
-# Updated  : 16 March 2025
+# Updated  : 17 March 2025
 # Purpose  : Utility for accessing the Bluetooth TNC on the BTECH UV PRO.           
 source /opt/emcomm-tools/bin/et-common
 
@@ -236,8 +237,7 @@ EOF
 
     is_paired=$(bluetoothctl info ${MAC} | grep "Paired" | awk '{print $2}')
     if [ "${is_paired}" != "yes" ]; then
-    echo -e "${RED}"
-      et-log "${DEVICE_NAME} is not paired. Run: '$(basename $0) pair'"
+      echo -e "${RED}${DEVICE_NAME} is not paired. Run: '${WHITE}$(basename $0) pair${RED}'"
       echo -e "${NC}"
       exit 1
     fi  

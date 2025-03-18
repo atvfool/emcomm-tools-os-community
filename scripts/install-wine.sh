@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author  : Gaston Gonzalez
 # Date    : 20 January 2025
-# Updated : 1 February 2025
+# Updated : 18 March 2025
 # Purpose : Install WINE to support VARA
 
 WIN32_DIR="${HOME}/.win32"
@@ -27,5 +27,8 @@ apt install \
   exe-thumbnailer \
   -y
 
-dialog --textbox wine.txt 15 74
-tput sgr 0 && clear
+# Only show the directions for including WINE in the image to advanced users
+if [[ ! -z "${ET_EXPERT}" ]]; then
+  dialog --textbox wine.txt 15 74
+  tput sgr 0 && clear
+fi

@@ -2,7 +2,7 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 16 March 2024
-# Updated : 28 February 2025
+# Updated : 18 March 2025
 # Purpose : Main installer for EmComm Tools OS Community
 
 . ./env.sh
@@ -57,6 +57,6 @@ exitIfNotRoot
 
 # Add user-specific data
 ./download-osm-maps.sh
-./download-wikipedia.sh
+[ ! -z "${ET_EXPERT}" ] && ./download-wikipedia.sh
 
 ./install-wine.sh

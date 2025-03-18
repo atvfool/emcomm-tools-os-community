@@ -2,7 +2,7 @@
 #
 # Author   : Gaston Gonzalez
 # Date     : 6 November 2024
-# Updated  : 15 March 2025
+# Updated  : 18 March 2025
 # Purpose  : Configures the system for a specific mode of operation
 
 # Use a simple text file to save the state of the last mode selected
@@ -236,7 +236,6 @@ if [ $exit_status -eq 0 ]; then
       min http://localhost:8080
     ;;
     ${MODE_ID_WINLINK_PACKET})
-      winlink_mode
       start_and_wait_for_service et-service-direwolf-simple 
       start_and_wait_for_service et-service-winlink-packet
       min http://localhost:8080

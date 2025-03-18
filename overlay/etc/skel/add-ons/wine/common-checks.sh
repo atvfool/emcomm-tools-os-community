@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author  : Gaston Gonzalez
 # Date    : 1 February 2025
-# Updated : 17 February 2025
+# Updated : 18 March 2025
 # Purpose : Performs various checks to ensure that changes can be made
 #           to a user's local WINE installation.
 
@@ -20,7 +20,7 @@ fi
 
 if [[ -z "${WINEARCH}" ]]; then
   echo -e "The WINEARCH environment variable is not set. Setting it for you."
-  export WINEARCH="win32"
+  export WINEARCH="win64"
 fi
 
 if [[ -z "${WINEPREFIX}" ]]; then

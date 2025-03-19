@@ -2,11 +2,11 @@
 #
 # Author  : Gaston Gonzalez
 # Date    : 20 January 2025
-# Updated : 28 February 2025
+# Updated : 18 March 2025
 # Purpose : Install VARA FM
-
 source ./common-checks.sh
 
+VARA_HOME="$HOME/.wine32/drive_c/VARA FM"
 VARA_PATTERN="VARA%20FM"
 
 ./vara-downloader.sh "${VARA_PATTERN}"

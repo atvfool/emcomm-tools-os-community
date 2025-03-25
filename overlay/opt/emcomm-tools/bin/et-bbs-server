@@ -13,8 +13,8 @@
 source /opt/emcomm-tools/bin/et-common
 
 BBS_CONF_DIR=${HOME}/.local/share/emcomm-tools/bbs-server
-BBS_CONF_FILE=${BBS_CONF_DIR}/bpq32.conf
-BBS_CONF_FILE_TEMPLATE=/opt/emcomm-tools/conf/template.d/bbs/bpq32.simple.conf
+BBS_CONF_FILE=${BBS_CONF_DIR}/bpq32.cfg
+BBS_CONF_FILE_TEMPLATE=/opt/emcomm-tools/conf/template.d/bbs/bpq32.simple.cfg
 
 usage() {
   echo "usage: $(basename $0) <command>"

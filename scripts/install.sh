@@ -27,6 +27,7 @@ exitIfNotRoot
 
 ./install-hamlib.sh
 ./install-js8call.sh
+./install-wsjtx.sh
 
 ./install-udev.sh
 ./install-gps.sh 

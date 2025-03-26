@@ -22,19 +22,19 @@ et-log "Installing Linbpq..."
 # Install the web interface for LinBPQ
 HTML_ZIP_FILE=HTMLPages.zip
 HTML_ZIP_URL="http://www.cantab.net/users/john.wiseman/Downloads/Beta/${HTML_ZIP_FILE}"
+BBS_HOME="/etc/skel/.local/share/emcomm-tools/bbs-server"
+BBS_HOME_FILES="${BBS_HOME}/Files"
 
+et-log "Downloading web interface for LinBPQ from ${HTML_ZIP_URL}"
 curl -s -f -L -o ${HTML_ZIP_FILE} ${HTML_ZIP_URL}
+
 if [[ $? -eq 0 ]]; then
-   et-log "Downloading web interface for LinBPQ from ${HTML_ZIP_URL}"
 
    CWD_DIR=$(pwd)
 
    et-log "Installing web interface under ${BBS_HOME}"
-   BBS_HOME="/etc/skel/.local/share/emcomm-tools/bbs-server"
-   BBS_HOME_FILES="${BBS_HOME}/Files"
 
    [[ ! -e ${BBS_HOME_FILES} ]] && mkdir -p ${BBS_HOME_FILES}
-
    mv ${HTML_ZIP_FILE} ${BBS_HOME} && cd ${BBS_HOME} && unzip ${HTML_ZIP_FILE}
 
    cd ${CWD_DIR}
